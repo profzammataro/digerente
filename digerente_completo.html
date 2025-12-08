@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apparato Digerente Interattivo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .nav-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .image-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        
+        .hotspot {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 68, 68, 0.7);
+            border: 3px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .hotspot:hover {
+            background: rgba(255, 68, 68, 1);
+            transform: scale(1.3);
+        }
+        
+        .organ-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+        
+        .organ-card h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 2em;
+        }
+        
+        .organ-card h3 {
+            color: #764ba2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .organ-card p, .organ-card ul {
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .organ-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .organ-card li {
+            margin-bottom: 8px;
+        }
+
+        .organ-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .question h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .quiz-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 50px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+        
+        .result {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 1.5em;
+        }
+        
+        .info-text {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🫁 Apparato Digerente Interattivo</h1>
+            <p>Esplora il sistema digestivo e metti alla prova le tue conoscenze!</p>
+        </header>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('explore')">Esplora</button>
+            <button class="nav-btn" onclick="showSection('quiz')">Quiz Finale</button>
+        </div>
+        
+        <div class="content">
+            <!-- Sezione Esplorazione -->
+            <div id="explore" class="section active">
+                <p class="info-text">👆 Clicca sui punti rossi per scoprire i dettagli di ogni organo</p>
+                
+                <div class="image-container">
+                    <img src="https://profzammataro.github.io/Portfolio/images/digerente/apparato-digerente.jpg" alt="Apparato Digerente">
+                    
+                    <!-- Hotspots (posizioni approssimative) -->
+                    <div class="hotspot" style="top: 8%; left: 60%;" onclick="showOrgan('ghiandole')" title="Ghiandole Salivari"></div>
+                    <div class="hotspot" style="top: 15%; left: 52%;" onclick="showOrgan('esofago')" title="Esofago"></div>
+                    <div class="hotspot" style="top: 35%; left: 65%;" onclick="showOrgan('stomaco')" title="Stomaco"></div>
+                    <div class="hotspot" style="top: 42%; left: 45%;" onclick="showOrgan('fegato')" title="Fegato"></div>
+                    <div class="hotspot" style="top: 48%; left: 55%;" onclick="showOrgan('cistifellea')" title="Cistifellea"></div>
+                    <div class="hotspot" style="top: 40%; left: 75%;" onclick="showOrgan('pancreas')" title="Pancreas"></div>
+                    <div class="hotspot" style="top: 60%; left: 48%;" onclick="showOrgan('intestino-tenue')" title="Intestino Tenue"></div>
+                    <div class="hotspot" style="top: 70%; left: 65%;" onclick="showOrgan('intestino-crasso')" title="Intestino Crasso"></div>
+                    <div class="hotspot" style="top: 85%; left: 52%;" onclick="showOrgan('appendice')" title="Appendice"></div>
+                </div>
+                
+                <div id="organ-info"></div>
+            </div>
+            
+            <!-- Sezione Quiz -->
+            <div id="quiz" class="section">
+                <div class="quiz-container">
+                    <h2 style="text-align: center; color: #667eea; margin-bottom: 30px;">Quiz di Ripasso</h2>
+                    
+                    <div class="question" data-correct="2">
+                        <h3>1. Quale organo produce la bile?</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Pancreas</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Stomaco</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Fegato</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Cistifellea</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="1">
+                        <h3>2. Dove inizia la digestione degli amidi?</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Nello stomaco</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Nella bocca</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Nell'intestino tenue</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Nell'esofago</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="2">
+                        <h3>3. Qual è la funzione principale dell'intestino crasso?</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Digestione delle proteine</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Produzione di enzimi</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Assorbimento dell'acqua</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Secrezione di bile</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="1">
+                        <h3>4. Il pancreas produce:</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Solo ormoni</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Enzimi digestivi e ormoni</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Solo bile</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Solo succhi gastrici</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="0">
+                        <h3>5. Dove avviene la maggior parte dell'assorbimento dei nutrienti?</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Nell'intestino tenue</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Nello stomaco</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Nell'intestino crasso</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Nel duodeno</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="3">
+                        <h3>6. La cistifellea ha la funzione di:</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Produrre bile</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Digerire i grassi</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Assorbire nutrienti</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Immagazzinare bile</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="2">
+                        <h3>7. Il pH dello stomaco è:</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Neutro (7)</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Basico (9-10)</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Acido (1.5-3.5)</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Leggermente acido (5-6)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-correct="1">
+                        <h3>8. Quale parte dell'intestino tenue è la prima?</h3>
+                        <div class="options">
+                            <div class="option" onclick="selectOption(this, 0)">A) Ileo</div>
+                            <div class="option" onclick="selectOption(this, 1)">B) Duodeno</div>
+                            <div class="option" onclick="selectOption(this, 2)">C) Digiuno</div>
+                            <div class="option" onclick="selectOption(this, 3)">D) Colon</div>
+                        </div>
+                    </div>
+                    
+                    <button class="quiz-btn" onclick="checkAnswers()">Verifica Risposte</button>
+                    <div id="quiz-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const organs = {
+            'ghiandole': {
+                title: 'Ghiandole Salivari',
+                description: 'Le ghiandole salivari sono organi che producono la saliva, essenziale per iniziare il processo digestivo.',
+                details: '<h3>Funzioni principali:</h3><ul><li>Produzione di saliva (1-1.5 litri al giorno)</li><li>Lubrificazione del cibo per facilitare la deglutizione</li><li>Inizio della digestione degli amidi tramite l\'enzima amilasi</li><li>Azione antibatterica e protezione della bocca</li></ul><h3>Tipi:</h3><ul><li><strong>Parotide:</strong> la più grande, produce saliva sierosa</li><li><strong>Sottomandibolare:</strong> produce saliva mista</li><li><strong>Sottolinguale:</strong> produce saliva mucosa</li></ul>',
+                image: null
+            },
+            'esofago': {
+                title: 'Esofago',
+                description: 'L\'esofago è un tubo muscolare lungo circa 25 cm che collega la faringe allo stomaco.',
+                details: '<h3>Caratteristiche:</h3><ul><li>Lunghezza: circa 25 cm</li><li>Attraversa il diaframma tramite lo iato esofageo</li><li>Possiede due sfinteri: superiore e inferiore</li></ul><h3>Funzione:</h3><ul><li>Trasporto del cibo dalla bocca allo stomaco mediante movimenti peristaltici</li><li>Lo sfintere esofageo inferiore previene il reflusso gastrico</li><li>Il transito del bolo alimentare dura 4-8 secondi</li></ul>',
+                image: null
+            },
+            'stomaco': {
+                title: 'Stomaco',
+                description: 'Lo stomaco è un organo a forma di sacco dove avviene la digestione meccanica e chimica del cibo.',
+                details: '<h3>Funzioni principali:</h3><ul><li>Immagazzinamento temporaneo del cibo (fino a 2 litri)</li><li>Mescolamento meccanico del cibo con i succhi gastrici</li><li>Digestione delle proteine tramite la pepsina</li><li>Produzione di acido cloridrico (pH 1.5-3.5)</li><li>Produzione del fattore intrinseco per l\'assorbimento della vitamina B12</li><li>Azione antibatterica grazie all\'ambiente acido</li></ul><h3>Regioni:</h3><ul><li>Cardias, fondo, corpo, antro e piloro</li></ul>',
+                image: 'https://profzammataro.github.io/Portfolio/images/digerente/stomaco.jpg'
+            },
+            'fegato': {
+                title: 'Fegato',
+                description: 'Il fegato è la ghiandola più grande del corpo umano, con oltre 500 funzioni vitali.',
+                details: '<h3>Funzioni digestive:</h3><ul><li>Produzione di bile (500-1000 ml al giorno) per emulsionare i grassi</li><li>Metabolismo dei carboidrati, proteine e lipidi</li><li>Immagazzinamento del glicogeno</li></ul><h3>Altre funzioni:</h3><ul><li>Detossificazione del sangue da sostanze nocive</li><li>Sintesi di proteine plasmatiche (albumina, fattori della coagulazione)</li><li>Deposito di vitamine (A, D, E, K, B12) e ferro</li><li>Produzione di colesterolo</li><li>Regolazione del metabolismo degli ormoni</li></ul>',
+                image: 'https://profzammataro.github.io/Portfolio/images/digerente/fegato-orig.jpeg'
+            },
+            'cistifellea': {
+                title: 'Cistifellea (o Colecisti)',
+                description: 'La cistifellea è un piccolo organo a forma di pera che immagazzina e concentra la bile.',
+                details: '<h3>Caratteristiche:</h3><ul><li>Capacità: 30-50 ml di bile</li><li>Concentra la bile fino a 10 volte</li><li>Collegata al duodeno tramite il dotto biliare comune</li></ul><h3>Funzione:</h3><ul><li>Immagazzinamento della bile prodotta dal fegato</li><li>Rilascio della bile nel duodeno durante la digestione dei grassi</li><li>La contrazione è stimolata dall\'ormone colecistochinina (CCK)</li></ul><h3>Nota:</h3><p>È possibile vivere senza cistifellea; la bile fluirà continuamente nell\'intestino.</p>',
+                image: null
+            },
+            'pancreas': {
+                title: 'Pancreas',
+                description: 'Il pancreas è una ghiandola con duplice funzione: esocrina ed endocrina.',
+                details: '<h3>Funzione esocrina:</h3><ul><li>Produzione di enzimi digestivi (lipasi, amilasi, tripsina)</li><li>Secrezione di bicarbonato per neutralizzare l\'acidità gastrica</li><li>Produce 1-2 litri di succo pancreatico al giorno</li></ul><h3>Funzione endocrina:</h3><ul><li>Produzione di insulina (abbassa la glicemia)</li><li>Produzione di glucagone (aumenta la glicemia)</li><li>Regolazione del metabolismo del glucosio</li></ul><h3>Posizione:</h3><p>Situato dietro lo stomaco, si estende dalla curva del duodeno alla milza.</p>',
+                image: 'https://profzammataro.github.io/Portfolio/images/digerente/pancreas.jpg'
+            },
+            'intestino-tenue': {
+                title: 'Intestino Tenue',
+                description: 'L\'intestino tenue è il tratto più lungo del sistema digestivo, dove avviene la maggior parte della digestione e dell\'assorbimento.',
+                details: '<h3>Caratteristiche:</h3><ul><li>Lunghezza: 6-7 metri</li><li>Superficie interna molto estesa grazie a villi e microvilli (circa 250 m²)</li></ul><h3>Suddivisioni:</h3><ul><li><strong>Duodeno (25 cm):</strong> riceve bile e succo pancreatico, pH neutralizzato</li><li><strong>Digiuno (2.5 m):</strong> assorbimento attivo di nutrienti</li><li><strong>Ileo (3.5 m):</strong> assorbimento finale, contiene le placche di Peyer (tessuto linfoide)</li></ul><h3>Funzioni:</h3><ul><li>Digestione finale di carboidrati, proteine e grassi</li><li>Assorbimento di nutrienti, vitamine e minerali</li><li>Assorbimento del 90% dell\'acqua ingerita</li></ul>',
+                image: null
+            },
+            'intestino-crasso': {
+                title: 'Intestino Crasso (Colon)',
+                description: 'L\'intestino crasso è l\'ultima parte del tubo digerente, responsabile dell\'assorbimento dell\'acqua.',
+                details: '<h3>Caratteristiche:</h3><ul><li>Lunghezza: circa 1.5 metri</li><li>Diametro maggiore rispetto all\'intestino tenue</li></ul><h3>Suddivisioni:</h3><ul><li>Colon ascendente</li><li>Colon trasverso</li><li>Colon discendente</li><li>Sigma</li><li>Retto</li></ul><h3>Funzioni:</h3><ul><li>Assorbimento di acqua ed elettroliti (circa 1 litro al giorno)</li><li>Formazione e deposito delle feci</li><li>Fermentazione batterica di fibre non digerite</li><li>Produzione di vitamine K e alcune vitamine del gruppo B tramite la flora batterica</li><li>Eliminazione dei rifiuti attraverso la defecazione</li></ul>',
+                image: 'https://profzammataro.github.io/Portfolio/images/digerente/intestino_crasso.jpg'
+            },
+            'appendice': {
+                title: 'Appendice Vermiforme',
+                description: 'L\'appendice è una piccola struttura tubolare collegata al cieco (inizio dell\'intestino crasso).',
+                details: '<h3>Caratteristiche:</h3><ul><li>Lunghezza: 5-10 cm</li><li>Diametro: circa 6-8 mm</li><li>Posizione: nella fossa iliaca destra</li></ul><h3>Funzione:</h3><ul><li>Contiene tessuto linfoide (parte del sistema immunitario)</li><li>Possibile ruolo nella protezione e ripopolazione della flora intestinale</li><li>Può fungere da "riserva" di batteri benefici</li></ul><h3>Patologia:</h3><p>L\'infiammazione dell\'appendice (appendicite) è una condizione medica comune che richiede intervento chirurgico.</p>',
+                image: null
+            }
+        };
+        
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function showOrgan(organId) {
+            const organ = organs[organId];
+            const infoDiv = document.getElementById('organ-info');
+            
+            let imageHTML = '';
+            if (organ.image) {
+                imageHTML = `<img src="${organ.image}" alt="${organ.title}" class="organ-image">`;
+            }
+            
+            infoDiv.innerHTML = `
+                <div class="organ-card">
+                    <h2>${organ.title}</h2>
+                    <p><strong>${organ.description}</strong></p>
+                    ${imageHTML}
+                    ${organ.details}
+                </div>
+            `;
+            
+            infoDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        
+        let selectedAnswers = {};
+        
+        function selectOption(element, optionIndex) {
+            const question = element.closest('.question');
+            const questionIndex = Array.from(document.querySelectorAll('.question')).indexOf(question);
+            const options = question.querySelectorAll('.option');
+            
+            options.forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            selectedAnswers[questionIndex] = optionIndex;
+        }
+        
+        function checkAnswers() {
+            const questions = document.querySelectorAll('.question');
+            let correct = 0;
+            let total = questions.length;
+            
+            questions.forEach((question, index) => {
+                const correctAnswer = parseInt(question.dataset.correct);
+                const userAnswer = selectedAnswers[index];
+                const options = question.querySelectorAll('.option');
+                
+                options.forEach((option, optIndex) => {
+                    option.style.pointerEvents = 'none';
+                    
+                    if (optIndex === correctAnswer) {
+                        option.classList.add('correct');
+                    }
+                    
+                    if (userAnswer === optIndex && userAnswer !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                if (userAnswer === correctAnswer) {
+                    correct++;
+                }
+            });
+            
+            const percentage = Math.round((correct / total) * 100);
+            const resultDiv = document.getElementById('quiz-result');
+            
+            let message = '';
+            let emoji = '';
+            
+            if (percentage === 100) {
+                message = 'Perfetto! Hai risposto correttamente a tutte le domande!';
+                emoji = '🏆';
+            } else if (percentage >= 75) {
+                message = 'Ottimo lavoro! Hai una buona conoscenza dell\'apparato digerente!';
+                emoji = '🌟';
+            } else if (percentage >= 50) {
+                message = 'Buon tentativo! Continua a studiare per migliorare!';
+                emoji = '📚';
+            } else {
+                message = 'Hai bisogno di ripassare. Torna alla sezione Esplora!';
+                emoji = '💪';
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="result">
+                    <h2>${emoji} ${message}</h2>
+                    <p style="font-size: 2em; margin-top: 20px;">Punteggio: ${correct}/${total} (${percentage}%)</p>
+                </div>
+            `;
+            
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html></body>
+</html>
